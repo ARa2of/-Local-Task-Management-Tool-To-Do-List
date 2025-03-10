@@ -1,6 +1,7 @@
 # Local Task Management Tool
 
 This is a local task management tool that allows you to manage your tasks. You can add, edit, and delete tasks. You can also mark tasks as completed. Additionally, this tool provides features to export and import your task database as JSON files, delete tasks, and clear dropdown menus.
+![Screenshot of the Task Management Tool](Screenshot%202025-03-10%20010020.png)
 
 ## Features
 
