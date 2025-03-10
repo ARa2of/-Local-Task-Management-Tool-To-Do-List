@@ -1,0 +1,289 @@
+/* Global Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    font-family: 'Work Sans', sans-serif;
+    min-height: 100vh;
+    padding-top: 3%;
+    font-size: 16px; /* Set a base font size */
+}
+
+h1, h2 {
+    font-size: 24px; /* Ensure consistent heading sizes */
+    margin-bottom: 15px;
+}
+
+h2 {
+    font-size: 20px; /* Smaller than h1 */
+}
+
+/* Task Inputs Container */
+.task-inputs {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+    max-width: 1200px; /* Adjusted for wider layout */
+    padding: 20px;
+}
+
+/* Input Row (First Line) */
+.input-row {
+    display: flex;
+    gap: 10px;
+    width: 100%;
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    flex: 1;
+}
+
+.input-group label {
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.input-group input,
+.input-group select,
+.input-group textarea {
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 100%;
+}
+
+.input-group textarea {
+    resize: vertical;
+    height: 100px;
+}
+
+/* Add Task Button */
+#addTask {
+    padding: 10px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+    width: 100%;
+}
+
+#addTask:hover {
+    background-color: #0056b3;
+}
+
+/* Task Container */
+#taskContainer {
+    width: 100%;
+    max-width: 1200px; /* Adjusted for wider layout */
+    padding: 20px;
+    font-size: 16px; /* Ensure consistent font size */
+}
+
+.project-section h2 {
+    font-size: 22px; /* Consistent heading size */
+    font-weight: bold;
+    margin-bottom: 10px;
+    margin-top: 20px;
+}
+
+.task-item {
+    margin: 12px 0;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    width: 100%;
+}
+
+.task-item.completed {
+    background-color: #f0f0f0;
+    text-decoration: line-through;
+}
+
+.task-item .task-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Increased font size for main task text */
+.task-item .task-main-text {
+    font-size: 20px; /* Larger font for the main task text */
+    font-weight: 500; /* Slightly bolder */
+}
+
+.task-item .task-details {
+    font-size: 14px;
+    color: #666;
+}
+
+.task-item .task-notes {
+    font-size: 14px;
+}
+
+.complete-btn,
+.delete-btn {
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.complete-btn {
+    background-color: #28a745;
+    color: white;
+}
+
+.delete-btn {
+    background-color: #dc3545;
+    color: white;
+}
+
+/* Existing styles */
+.task-inputs {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 70%; /* Adjust as needed */
+}
+
+.input-row {
+    display: flex;
+    gap: 10px;
+}
+
+.input-group {
+    flex: 1;
+}
+
+/* Common styles for both delete and export buttons */
+.delete-buttons, .export-buttons {
+    position: fixed;
+    right: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 150px; /* Set a fixed width */
+}
+
+/* Adjust top position so export buttons are below delete buttons */
+.delete-buttons {
+    top: 20px;
+}
+
+.export-buttons {
+    top: 155px; /* Adjusted to be below delete buttons */
+}
+
+/* Different colors for each button */
+#deleteTasksDB {
+    background-color: #ff4d4d; /* Red */
+}
+
+#deleteTasksDB:hover {
+    background-color: #ff1a1a;
+}
+
+#deleteDropdownsDB {
+    background-color: #9c27b0; /* Purple */
+}
+
+#deleteDropdownsDB:hover {
+    background-color: #7b1fa2;
+}
+
+#importDatabase {
+    background-color: #2196f3; /* Blue */
+}
+
+#importDatabase:hover {
+    background-color: #0b7dda;
+}
+
+#exportDBs {
+    background-color: #4CAF50; /* Green */
+}
+
+#exportDBs:hover {
+    background-color: #45a049;
+}
+
+/* Common button styles */
+.delete-buttons button, .export-buttons button {
+    padding: 10px;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100%; /* Makes button width equal */
+    font-size: 14px; /* Consistent font size */
+}
+
+.person-name {
+    color: blue;
+    font-weight: bold;
+}
+
+/* Priority Colors */
+.priority-high {
+    color: red;
+    font-weight: bold;
+}
+
+.priority-medium {
+    color: green;
+    font-weight: bold;
+}
+
+.priority-low {
+    color: orange;
+    font-weight: bold;
+}
+
+/* Collapsed Task Styles */
+.project-section .task-item.completed {
+    display: flex; /* Visible when not collapsed */
+}
+
+.project-section.collapsed .task-item.completed {
+    display: none; /* Hidden when collapsed */
+}
+
+/* Collapse Button */
+.collapse-btn {
+    background-color: grey;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 5px 10px;
+    cursor: pointer;
+    margin-left: 10px;
+    font-size: 14px;
+}
+
+.collapse-btn:hover {
+    background-color: #0056b3;
+}
+
+/* Task Added Date */
+.task-added-date {
+    font-size: 12px;
+    color: gray;
+    margin-top: 5px;
+    font-style: italic;
+}

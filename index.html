@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Management Tool</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>Task Management Tool</h1>
+    <div class="task-inputs">
+        <!-- First Line: Task Type, Person, Project, Priority, Due Date -->
+        <div class="input-row">
+            <div class="input-group">
+                <label for="taskType">Task Type</label>
+                <input list="taskTypes" id="taskType" placeholder="Task Type">
+                <datalist id="taskTypes">
+                    <!-- Options will be populated dynamically by JavaScript -->
+                </datalist>
+            </div>
+
+            <div class="input-group">
+                <label for="people">Person</label>
+                <input list="peopleList" id="people" placeholder="Person">
+                <datalist id="peopleList">
+                    <!-- Options will be populated dynamically by JavaScript -->
+                </datalist>
+            </div>
+
+            <div class="input-group">
+                <label for="projects">Project</label>
+                <input list="projectsList" id="projects" placeholder="Project">
+                <datalist id="projectsList">
+                    <!-- Options will be populated dynamically by JavaScript -->
+                </datalist>
+            </div>
+
+            <div class="input-group">
+                <label for="priority">Priority</label>
+                <select id="priority">
+                    <option value="High">High</option>
+                    <option value="Medium">Medium</option>
+                    <option value="Low">Low</option>
+                </select>
+            </div>
+
+            <div class="input-group">
+                <label for="dueDate">Due Date</label>
+                <input type="date" id="dueDate">
+            </div>
+        </div>
+
+        <!-- Second Line: Task Description and Notes -->
+        <div class="input-row">
+            <div class="input-group">
+                <label for="taskDescription">Task Description</label>
+                <textarea id="taskDescription" placeholder="Task Description"></textarea>
+            </div>
+
+            <div class="input-group">
+                <label for="otherNotes">Other Notes</label>
+                <textarea id="otherNotes" placeholder="Other Notes"></textarea>
+            </div>
+        </div>
+
+        <button id="addTask">Add Task</button>
+    </div>
+	<!-- Button to export both databases -->
+	<div class="export-buttons">
+		<button id="exportDBs">Export Database</button>
+	</div>
+
+    <!-- Buttons to delete databases -->
+    <div class="delete-buttons">
+        <button id="deleteTasksDB">Delete Tasks</button>
+        <button id="deleteDropdownsDB">Clear Dropdowns</button>
+		<button id="importDatabase">Import Database</button>
+
+    </div>
+
+    <div id="taskContainer"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>
+
