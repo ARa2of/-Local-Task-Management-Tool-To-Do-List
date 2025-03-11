@@ -287,3 +287,25 @@ h2 {
     margin-top: 5px;
     font-style: italic;
 }
+
+.note-highlight {
+    background-color: yellow;
+}
+
+/* Styles for the "Other Notes" textarea */
+.task-item .task-notes textarea {
+    width: 100%; /* Match the width of the task box */
+    padding: 10px; /* Match the padding of the task box */
+    font-family: 'Work Sans', sans-serif; /* Use the same font as the task text */
+    font-size: 16px; /* 2 points smaller than the task text (16px - 2px = 14px) */
+    border: 1px solid #ccc; /* Match the border of the task box */
+    border-radius: 5px; /* Match the border radius of the task box */
+    resize: vertical; /* Allow vertical resizing */
+    background-color: transparent; /* Match the background of the task box */
+    color: inherit; /* Inherit the text color from the parent */
+}
+
+/* Ensure the textarea fits within the task box */
+.task-item .task-notes {
+    margin-top: 5px; /* Add some spacing between task details and notes */
+}
