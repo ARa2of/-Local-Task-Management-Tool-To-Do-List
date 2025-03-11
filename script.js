@@ -9,47 +9,50 @@ document.addEventListener("DOMContentLoaded", async () => {
     let tasksDB, dropdownsDB;
 
     // Open the tasks database
-    function openTasksDB() {
-        return new Promise((resolve, reject) => {
-            const request = indexedDB.open(TASKS_DB_NAME, DB_VERSION);
+// Open the tasks database
+	function openTasksDB() {
+		return new Promise((resolve, reject) => {
+			const request = indexedDB.open(TASKS_DB_NAME, DB_VERSION); // Use the updated version
 
-            request.onupgradeneeded = (event) => {
-                const db = event.target.result;
+			request.onupgradeneeded = (event) => {
+				const db = event.target.result;
 
-                // Create the tasks store if it doesn't exist
-                if (!db.objectStoreNames.contains(TASKS_STORE_NAME)) {
-                    db.createObjectStore(TASKS_STORE_NAME, { keyPath: "project" });
-                }
-                
-                // Create settings store if it doesn't exist
-                if (!db.objectStoreNames.contains(SETTINGS_STORE_NAME)) {
-                    db.createObjectStore(SETTINGS_STORE_NAME, { keyPath: "id" });
-                }
-            };
+				// Create the tasks store if it doesn't exist
+				if (!db.objectStoreNames.contains(TASKS_STORE_NAME)) {
+					db.createObjectStore(TASKS_STORE_NAME, { keyPath: "project" });
+				}
+				
+				// Create settings store if it doesn't exist
+				if (!db.objectStoreNames.contains(SETTINGS_STORE_NAME)) {
+					db.createObjectStore(SETTINGS_STORE_NAME, { keyPath: "id" });
+				}
+			};
 
-            request.onsuccess = () => resolve(request.result);
-            request.onerror = () => reject(request.error);
-        });
-    }
+			request.onsuccess = () => resolve(request.result);
+			request.onerror = () => reject(request.error);
+		});
+	}
 
-    // Open the dropdown values database
-    function openDropdownsDB() {
-        return new Promise((resolve, reject) => {
-            const request = indexedDB.open(DROPDOWNS_DB_NAME, DB_VERSION);
+	// Open the dropdown values database
+	function openDropdownsDB() {
+		return new Promise((resolve, reject) => {
+			const request = indexedDB.open(DROPDOWNS_DB_NAME, DB_VERSION); // Use the updated version
 
-            request.onupgradeneeded = (event) => {
-                const db = event.target.result;
+			request.onupgradeneeded = (event) => {
+				const db = event.target.result;
 
-                // Create the dropdown values store if it doesn't exist
-                if (!db.objectStoreNames.contains(DROPDOWN_STORE_NAME)) {
-                    db.createObjectStore(DROPDOWN_STORE_NAME, { keyPath: "type" });
-                }
-            };
+				// Create the dropdown values store if it doesn't exist
+				if (!db.objectStoreNames.contains(DROPDOWN_STORE_NAME)) {
+					db.createObjectStore(DROPDOWN_STORE_NAME, { keyPath: "type" });
+				}
+			};
 
-            request.onsuccess = () => resolve(request.result);
-            request.onerror = () => reject(request.error);
-        });
-    }
+			request.onsuccess = () => resolve(request.result);
+			request.onerror = () => reject(request.error);
+		});
+	}
+
+
 
     // Save tasks to IndexedDB
     async function saveTasks(tasks) {
@@ -236,89 +239,97 @@ document.addEventListener("DOMContentLoaded", async () => {
         await saveCollapsedState(collapsedProjects);
     }
 
-    // Add a task element to the UI
-    function addTaskElement(taskList, task, project) {
-        const taskItem = document.createElement("div");
-        taskItem.classList.add("task-item");
-        if (task.completed) taskItem.classList.add("completed");
+	function addTaskElement(taskList, task, project) {
+		const taskItem = document.createElement("div");
+		taskItem.classList.add("task-item");
+		if (task.completed) taskItem.classList.add("completed");
 
-        // Assign color based on priority
-        let priorityColor = "black";
-        if (task.priority === "High") priorityColor = "red";
-        if (task.priority === "Medium") priorityColor = "green";
-        if (task.priority === "Low") priorityColor = "orange";
-        
-        // Format the due date
-        let formattedDueDate = task.dueDate || "";
-        if (task.dueDate) {
-            try {
-                formattedDueDate = formatDate(task.dueDate);
-            } catch (e) {
-                console.warn("Invalid date format:", task.dueDate);
-                formattedDueDate = task.dueDate;
-            }
-        }
-        
-        // Format the current date and compare it to the formatted due date
-        const currentDate = new Date();
-        const dueDate = task.dueDate ? new Date(task.dueDate) : null;
-        
-        // Determine due date color (red if within 7 days)
-        let dueDateColor = "black";
-        if (dueDate) {
-            const timeDiff = dueDate - currentDate;
-            const daysLeft = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
-            dueDateColor = daysLeft <= 7 ? "red" : "black";
-        }
+		// Assign color based on priority
+		let priorityColor = "black";
+		if (task.priority === "High") priorityColor = "red";
+		if (task.priority === "Medium") priorityColor = "green";
+		if (task.priority === "Low") priorityColor = "orange";
+		
+		// Format the due date
+		const currentDate = new Date();
+		const dueDate = new Date(task.dueDate);
+		const timeDiff = dueDate - currentDate;
+		const daysLeft = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
 
-        // Check if addedDate exists, if not use current date
-        const addedDate = task.addedDate || formatDate(new Date());
+		// Determine due date color (red if within 7 days)
+		const dueDateColor = daysLeft <= 7 ? "red" : "black";
 
-        taskItem.innerHTML = `
-            <div class="task-info">
-                <span class="task-main-text">
-                    ${task.taskType || ""} <span class="person-name">${task.person || ""}</span> - ${task.taskText || ""}
-                </span>
-                <div>
-                    <button class="complete-btn">✔</button>
-                    <button class="delete-btn">✖</button>
-                </div>
-            </div>
-            <div class="task-details">
-                Priority: <span style="color:${priorityColor}">${task.priority || "None"}</span>, Due: <span style="color:${dueDateColor}">${formattedDueDate}</span>
-            </div>
-            <div class="task-notes">${task.notes || ""}</div>
-            <div class="task-added-date">Added on: ${addedDate}</div>
-        `;
+		// Check if addedDate exists, if not use current date
+		const addedDate = task.addedDate || new Date().toLocaleDateString();
 
-        taskList.appendChild(taskItem);
+		// Highlight "Note" in yellow
+		const taskTypeClass = task.taskType === "Note" ? "note-highlight" : "";
 
-        // Mark task as completed
-        taskItem.querySelector(".complete-btn").addEventListener("click", () => {
-            taskItem.classList.toggle("completed");
-            
-            // If project is collapsed, hide completed tasks
-            const projectSection = document.getElementById(project);
-            if (projectSection.classList.contains("collapsed") && taskItem.classList.contains("completed")) {
-                taskItem.style.display = "none";
-            }
-            
-            exportTasks();
-        });
+		taskItem.innerHTML = `
+			<div class="task-info">
+				<span class="task-main-text ${taskTypeClass}">
+					${task.taskType || ""} <span class="person-name">${task.person || ""}</span> - ${task.taskText || ""}
+				</span>
+				<div>
+					<button class="complete-btn">✔</button>
+					<button class="delete-btn">✖</button>
+				</div>
+			</div>
+			<div class="task-details">
+				Priority: <span style="color:${priorityColor}">${task.priority || "None"}</span>, Due: <span style="color:${dueDateColor}">${task.dueDate}</span>
+			</div>
+			<div class="task-notes">
+				<textarea class="notes-textarea" placeholder="Add updates or notes...">${task.notes || ""}</textarea>
+			</div>
+			<div class="task-added-date">Added on: ${addedDate}</div>
+		`;
 
-        // Delete task and remove empty project section
-        taskItem.querySelector(".delete-btn").addEventListener("click", () => {
-            taskItem.remove();
-            checkAndRemoveProject(project);
-            exportTasks();
-        });
-        
-        // Apply display style if project is collapsed and task is completed
-        const projectSection = document.getElementById(project);
-        if (projectSection.classList.contains("collapsed") && taskItem.classList.contains("completed")) {
-            taskItem.style.display = "none";
-        }
-    }
+		taskList.appendChild(taskItem);
+
+		// Mark task as completed
+		taskItem.querySelector(".complete-btn").addEventListener("click", () => {
+			taskItem.classList.toggle("completed");
+			
+			// If project is collapsed, hide completed tasks
+			const projectSection = document.getElementById(project);
+			if (projectSection.classList.contains("collapsed") && taskItem.classList.contains("completed")) {
+				taskItem.style.display = "none";
+			}
+			
+			exportTasks();
+		});
+
+		// Delete task and remove empty project section
+		taskItem.querySelector(".delete-btn").addEventListener("click", () => {
+			taskItem.remove();
+			checkAndRemoveProject(project);
+			exportTasks();
+		});
+
+		// Save notes when the textarea loses focus
+		const notesTextarea = taskItem.querySelector(".notes-textarea");
+		notesTextarea.addEventListener("blur", () => {
+			task.notes = notesTextarea.value; // Update the task's notes
+			exportTasks(); // Save the updated task to the database
+		});
+		
+
+
+		// Save on Enter Key
+		notesTextarea.addEventListener("keydown", (event) => {
+			if (event.key === "Enter" && !event.shiftKey) {
+				event.preventDefault(); // Prevent newline in textarea
+				notesTextarea.blur(); // Trigger the blur event to save notes
+			}
+		});
+
+		// Apply display style if project is collapsed and task is completed
+		const projectSection = document.getElementById(project);
+		if (projectSection.classList.contains("collapsed") && taskItem.classList.contains("completed")) {
+			taskItem.style.display = "none";
+		}
+	}
+
 
     // Function to check if a project has no tasks left and remove it
     async function checkAndRemoveProject(project) {
@@ -354,102 +365,93 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
     }
 
-    // Export tasks to IndexedDB
-    async function exportTasks() {
-        const tasks = {};
-        document.querySelectorAll(".project-section").forEach(projectSection => {
-            const projectName = projectSection.id;
-            const taskItems = projectSection.querySelectorAll(".task-item");
-            
-            if (!taskItems.length) return;
-            
-            tasks[projectName] = Array.from(taskItems).map(taskItem => {
-                try {
-                    // Extract person name from the span with class "person-name"
-                    const personSpan = taskItem.querySelector(".person-name");
-                    const person = personSpan ? personSpan.textContent.trim() : "";
-                    
-                    // Extract task type and text using a more robust approach
-                    const taskInfoSpan = taskItem.querySelector(".task-main-text");
-                    let taskType = "", taskText = "";
-                    
-                    if (taskInfoSpan) {
-                        const taskInfo = taskInfoSpan.textContent.trim();
-                        const dashIndex = taskInfo.indexOf("-");
-                        
-                        if (dashIndex > -1) {
-                            const beforeDash = taskInfo.substring(0, dashIndex).trim();
-                            taskType = beforeDash.replace(person, "").trim();
-                            taskText = taskInfo.substring(dashIndex + 1).trim();
-                        } else {
-                            // Fallback if no dash is found
-                            taskText = taskInfo;
-                        }
-                    }
-                    
-                    // Extract priority from the task details
-                    const detailsElement = taskItem.querySelector(".task-details");
-                    let priority = "None";
-                    
-                    if (detailsElement) {
-                        const priorityText = detailsElement.textContent;
-                        const priorityStart = priorityText.indexOf("Priority:") + 9;
-                        const priorityEnd = priorityText.indexOf(",", priorityStart);
-                        
-                        if (priorityStart > 8 && priorityEnd > priorityStart) {
-                            priority = priorityText.substring(priorityStart, priorityEnd).trim();
-                        }
-                    }
-                    
-                    // Extract due date from the task details
-                    let dueDate = "";
-                    if (detailsElement) {
-                        const dueText = detailsElement.textContent;
-                        const dueStart = dueText.indexOf("Due:") + 4;
-                        
-                        if (dueStart > 3) {
-                            dueDate = dueText.substring(dueStart).trim();
-                        }
-                    }
-                    
-                    // Extract notes from the task notes
-                    const notesElement = taskItem.querySelector(".task-notes");
-                    const notes = notesElement ? notesElement.textContent.trim() : "";
-                    
-                    // Extract added date if it exists
-                    const addedDateElement = taskItem.querySelector(".task-added-date");
-                    const addedDate = addedDateElement ? 
-                        addedDateElement.textContent.replace("Added on:", "").trim() : 
-                        formatDate(new Date());
-                    
-                    return {
-                        taskType,
-                        person,
-                        taskText,
-                        priority,
-                        dueDate,
-                        notes,
-                        addedDate,
-                        completed: taskItem.classList.contains("completed"),
-                    };
-                } catch (error) {
-                    console.error("Error extracting task data:", error);
-                    return {
-                        taskType: "Error",
-                        taskText: "Error parsing task",
-                        priority: "None",
-                        dueDate: "",
-                        notes: "",
-                        addedDate: formatDate(new Date()),
-                        completed: false
-                    };
-                }
-            });
-        });
+	async function exportTasks() {
+		const tasks = {};
+		document.querySelectorAll(".project-section").forEach(projectSection => {
+			const projectName = projectSection.id;
+			const taskItems = projectSection.querySelectorAll(".task-item");
+			
+			if (!taskItems.length) return;
+			
+			tasks[projectName] = Array.from(taskItems).map(taskItem => {
+				try {
+					// Extract person name from the span with class "person-name"
+					const personSpan = taskItem.querySelector(".person-name");
+					const person = personSpan ? personSpan.textContent.trim() : "";
+					
+					// Extract task type and text using a more robust approach
+					const taskInfoSpan = taskItem.querySelector(".task-main-text");
+					let taskType = "", taskText = "";
+					
+					if (taskInfoSpan) {
+						const taskInfo = taskInfoSpan.textContent.trim();
+						const dashIndex = taskInfo.indexOf("-");
+						
+						if (dashIndex > -1) {
+							const beforeDash = taskInfo.substring(0, dashIndex).trim();
+							taskType = beforeDash.replace(person, "").trim();
+							taskText = taskInfo.substring(dashIndex + 1).trim();
+						} else {
+							// Fallback if no dash is found
+							taskText = taskInfo;
+						}
+					}
+					
+					// Extract priority from the task details
+					const detailsElement = taskItem.querySelector(".task-details");
+					let priority = "None";
+					
+					if (detailsElement) {
+						const priorityText = detailsElement.textContent;
+						const priorityStart = priorityText.indexOf("Priority:") + 9;
+						const priorityEnd = priorityText.indexOf(",", priorityStart);
+						
+						if (priorityStart > 8 && priorityEnd > priorityStart) {
+							priority = priorityText.substring(priorityStart, priorityEnd).trim();
+						}
+					}
+					
+					// Extract due date from the task details
+					const dueDate = taskItem.querySelector(".task-details").textContent.split("Due:")[1].trim();
 
-        console.log("Exporting tasks:", tasks);
-        await saveTasks(tasks);
-    }
+					// Extract notes from the task notes
+					const notesElement = taskItem.querySelector(".task-notes textarea");
+					const notes = notesElement ? notesElement.value.trim() : ""; // Use .value for textarea
+					
+					// Extract added date if it exists
+					const addedDateElement = taskItem.querySelector(".task-added-date");
+					const addedDate = addedDateElement ? 
+						addedDateElement.textContent.replace("Added on:", "").trim() : 
+						formatDate(new Date());
+					
+					return {
+						taskType,
+						person,
+						taskText,
+						priority,
+						dueDate,
+						notes, // Ensure notes are included
+						addedDate,
+						completed: taskItem.classList.contains("completed"),
+					};
+				} catch (error) {
+					console.error("Error extracting task data:", error);
+					return {
+						taskType: "Error",
+						taskText: "Error parsing task",
+						priority: "None",
+						dueDate: "",
+						notes: "",
+						addedDate: formatDate(new Date()),
+						completed: false
+					};
+				}
+			});
+		});
+
+		console.log("Exporting tasks:", tasks);
+		await saveTasks(tasks);
+	}
 
     // Save dropdown values to IndexedDB
     async function saveDropdownValues(type, value) {
@@ -658,7 +660,11 @@ document.addEventListener("DOMContentLoaded", async () => {
             alert("Error adding task. Please try again.");
         }
     });
-	await importTasks();
+
+    // Load tasks and dropdown values when the page loads
+    await importTasks();
+    await updateDropdowns();
+
     // Function to export a database as a JSON file
     async function exportDatabase(dbName, storeName, fileName) {
         try {
